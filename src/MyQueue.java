@@ -1,3 +1,4 @@
+import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -9,8 +10,8 @@ public class MyQueue implements Queue {
     private static final int DEFAULT_INITIAL_CAPACITY = 10;
     String[] backingStore;
     private int size = 0;
-    private int front;
-    private int back;
+    private int front = 0;
+    private int back = 0;
 
     public MyQueue() {
         this(DEFAULT_INITIAL_CAPACITY);
@@ -114,8 +115,7 @@ public class MyQueue implements Queue {
             }
 
             counter++;
-            cursor = ++cursor % backingStore.length;
-            return backingStore[cursor];
+            return backingStore[cursor++ % backingStore.length];
         }
     }
 
@@ -133,10 +133,28 @@ public class MyQueue implements Queue {
         if (size == backingStore.length)
             refactor();
 
-        back = (back + 1) % backingStore.length;
-        size++;
+        if (isEmpty()) {
+            backingStore[0] = s;
+        } else {
+            back = (back + 1) % backingStore.length;
+            backingStore[back] = s;
+        }
 
-        backingStore[back] = s;
+        size++;
+    }
+
+    /**
+     * Refactors the backing store array to accommodate more elements.
+     * Invoked when the current capacity is reached during an enqueue operation.
+     */
+    private void refactor() {
+        String[] holder = backingStore;
+        backingStore = new String[backingStore.length + DEFAULT_INITIAL_CAPACITY];
+        for (int i = 0; i < backingStore.length; i++) {
+            backingStore[i] = holder[(i + front) % backingStore.length];
+        }
+        front = 0;
+        back = size;
     }
 
     /**
@@ -146,9 +164,17 @@ public class MyQueue implements Queue {
      * @throws IllegalStateException if the queue is empty.
      */
     public String dequeue() {
+        if (isEmpty())
+            throw new IllegalStateException("Can not dequeue from an empty que");
+
         String returnVal = backingStore[front];
         front = (front + 1) % backingStore.length;
         size--;
+
+        if (isEmpty()) {
+            front = 0;
+            back = 0;
+        }
 
         return returnVal;
     }
@@ -216,25 +242,24 @@ public class MyQueue implements Queue {
      */
     @Override
     public Object[] toArray(Object[] a) {
-        String[] outray = new String[size];
-        for (int i = 0; i < backingStore.length; i++) {
-            outray[i] = backingStore[(i + front) % backingStore.length];
+        if (a.length < size) {
+            a = (Object[]) Array.newInstance(a.getClass().getComponentType(), size());
         }
-        return outray;
-    }
 
-    /**
-     * Refactors the backing store array to accommodate more elements.
-     * Invoked when the current capacity is reached during an enqueue operation.
-     */
-    private void refactor() {
-        String[] holder = backingStore;
-        backingStore = new String[backingStore.length + DEFAULT_INITIAL_CAPACITY];
+        int counter = 0;
+
         for (int i = 0; i < backingStore.length; i++) {
-            backingStore[i] = holder[(i + front) % backingStore.length];
+            if (!a.getClass().getComponentType().isAssignableFrom(backingStore[(i + front) % backingStore.length].getClass())) {
+                throw new ArrayStoreException("Incompatible array type for the elements in the list.");
+            }
+            a[counter++] = backingStore[(i + front) % backingStore.length];
         }
-        front = 0;
-        back = size;
+        //if any positions remain in the array, fill them with 'null's. the previous index counter is maintained to finish the job
+        for (int j = counter; j < a.length; j++) {
+            a[counter++] = null;
+        }
+
+        return a;
     }
 
     /**
