@@ -6,7 +6,7 @@ import java.util.*;
  * Elements are enqueued at the back and dequeued from the front.
  * The circular queue allows efficient use of space by wrapping around the array.
  */
-public class MyQueue implements Queue {
+public class MyQueue{
     private static final int DEFAULT_INITIAL_CAPACITY = 10;
     String[] backingStore;
     private int size = 0;
@@ -59,12 +59,11 @@ public class MyQueue implements Queue {
      *                              collection does not permit null elements
      *                              (<a href="{@docRoot}/java.base/java/util/Collection.html#optional-restrictions">optional</a>)
      */
-    @Override
     public boolean contains(Object o) {
         boolean returnVal = false;
 
-        for (Object s : this) {
-            if (s.equals(o)) {
+        for (int i = 0; i < size; i++) {
+            if (backingStore[(i + front) % backingStore.length].equals(o)) {
                 returnVal = true;
                 break;
             }
@@ -81,7 +80,6 @@ public class MyQueue implements Queue {
      *
      * @return an {@code Iterator} over the elements in this collection
      */
-    @Override
     public Iterator iterator() {
         return new MyIterator();
     }
@@ -185,157 +183,15 @@ public class MyQueue implements Queue {
      * @return An array of strings representing the elements in the queue.
      */
     public String[] toArray() {
+        Iterator sitter = iterator();
         String[] outray = new String[size];
-        for (int i = 0; i < backingStore.length; i++) {
-            outray[i] = backingStore[(i + front) % backingStore.length];
-        }
-        return outray;
-    }
-
-    /**
-     * Returns an array containing all of the elements in this collection;
-     * the runtime type of the returned array is that of the specified array.
-     * If the collection fits in the specified array, it is returned therein.
-     * Otherwise, a new array is allocated with the runtime type of the
-     * specified array and the size of this collection.
-     *
-     * <p>If this collection fits in the specified array with room to spare
-     * (i.e., the array has more elements than this collection), the element
-     * in the array immediately following the end of the collection is set to
-     * {@code null}.  (This is useful in determining the length of this
-     * collection <i>only</i> if the caller knows that this collection does
-     * not contain any {@code null} elements.)
-     *
-     * <p>If this collection makes any guarantees as to what order its elements
-     * are returned by its iterator, this method must return the elements in
-     * the same order.
-     *
-     * @param a the array into which the elements of this collection are to be
-     *          stored, if it is big enough; otherwise, a new array of the same
-     *          runtime type is allocated for this purpose.
-     * @return an array containing all of the elements in this collection
-     * @throws ArrayStoreException  if the runtime type of any element in this
-     *                              collection is not assignable to the {@linkplain Class#getComponentType
-     *                              runtime component type} of the specified array
-     * @throws NullPointerException if the specified array is null
-     * @apiNote This method acts as a bridge between array-based and collection-based APIs.
-     * It allows an existing array to be reused under certain circumstances.
-     * Use {@link #toArray()} to create an array whose runtime type is {@code Object[]},
-     * or use {@link #toArray(IntFunction)} to control the runtime type of
-     * the array.
-     *
-     * <p>Suppose {@code x} is a collection known to contain only strings.
-     * The following code can be used to dump the collection into a previously
-     * allocated {@code String} array:
-     *
-     * <pre>
-     *     String[] y = new String[SIZE];
-     *     ...
-     *     y = x.toArray(y);</pre>
-     *
-     * <p>The return value is reassigned to the variable {@code y}, because a
-     * new array will be allocated and returned if the collection {@code x} has
-     * too many elements to fit into the existing array {@code y}.
-     *
-     * <p>Note that {@code toArray(new Object[0])} is identical in function to
-     * {@code toArray()}.
-     */
-    @Override
-    public Object[] toArray(Object[] a) {
-        if (a.length < size) {
-            a = (Object[]) Array.newInstance(a.getClass().getComponentType(), size());
-        }
-
         int counter = 0;
 
-        for (int i = 0; i < backingStore.length; i++) {
-            if (!a.getClass().getComponentType().isAssignableFrom(backingStore[(i + front) % backingStore.length].getClass())) {
-                throw new ArrayStoreException("Incompatible array type for the elements in the list.");
-            }
-            a[counter++] = backingStore[(i + front) % backingStore.length];
-        }
-        //if any positions remain in the array, fill them with 'null's. the previous index counter is maintained to finish the job
-        for (int j = counter; j < a.length; j++) {
-            a[counter++] = null;
+        while(sitter.hasNext()){
+            outray[counter++] = (String) sitter.next();
         }
 
-        return a;
-    }
-
-    /**
-     * Inserts the specified element into this queue if it is possible to do so
-     * immediately without violating capacity restrictions, returning
-     * {@code true} upon success and throwing an {@code IllegalStateException}
-     * if no space is currently available.
-     *
-     * @param o the element to add
-     * @return {@code true} (as specified by {@link Collection#add})
-     * @throws IllegalStateException    if the element cannot be added at this
-     *                                  time due to capacity restrictions
-     * @throws ClassCastException       if the class of the specified element
-     *                                  prevents it from being added to this queue
-     * @throws NullPointerException     if the specified element is null and
-     *                                  this queue does not permit null elements
-     * @throws IllegalArgumentException if some property of this element
-     *                                  prevents it from being added to this queue
-     */
-    @Override
-    public boolean add(Object o) {
-        return false;
-    }
-
-    /**
-     * Removes a single instance of the specified element from this
-     * collection, if it is present (optional operation).  More formally,
-     * removes an element {@code e} such that
-     * {@code Objects.equals(o, e)}, if
-     * this collection contains one or more such elements.  Returns
-     * {@code true} if this collection contained the specified element (or
-     * equivalently, if this collection changed as a result of the call).
-     *
-     * @param o element to be removed from this collection, if present
-     * @return {@code true} if an element was removed as a result of this call
-     * @throws ClassCastException            if the type of the specified element
-     *                                       is incompatible with this collection
-     *                                       (<a href="{@docRoot}/java.base/java/util/Collection.html#optional-restrictions">optional</a>)
-     * @throws NullPointerException          if the specified element is null and this
-     *                                       collection does not permit null elements
-     *                                       (<a href="{@docRoot}/java.base/java/util/Collection.html#optional-restrictions">optional</a>)
-     * @throws UnsupportedOperationException if the {@code remove} operation
-     *                                       is not supported by this collection
-     */
-    @Override
-    public boolean remove(Object o) {
-        return false;
-    }
-
-    /**
-     * Adds all of the elements in the specified collection to this collection
-     * (optional operation).  The behavior of this operation is undefined if
-     * the specified collection is modified while the operation is in progress.
-     * (This implies that the behavior of this call is undefined if the
-     * specified collection is this collection, and this collection is
-     * nonempty.)
-     *
-     * @param c collection containing elements to be added to this collection
-     * @return {@code true} if this collection changed as a result of the call
-     * @throws UnsupportedOperationException if the {@code addAll} operation
-     *                                       is not supported by this collection
-     * @throws ClassCastException            if the class of an element of the specified
-     *                                       collection prevents it from being added to this collection
-     * @throws NullPointerException          if the specified collection contains a
-     *                                       null element and this collection does not permit null elements,
-     *                                       or if the specified collection is null
-     * @throws IllegalArgumentException      if some property of an element of the
-     *                                       specified collection prevents it from being added to this
-     *                                       collection
-     * @throws IllegalStateException         if not all the elements can be added at
-     *                                       this time due to insertion restrictions
-     * @see #add(Object)
-     */
-    @Override
-    public boolean addAll(Collection c) {
-        return false;
+        return outray;
     }
 
     /**
@@ -345,87 +201,11 @@ public class MyQueue implements Queue {
      * @throws UnsupportedOperationException if the {@code clear} operation
      *                                       is not supported by this collection
      */
-    @Override
     public void clear() {
-
-    }
-
-    /**
-     * Retains only the elements in this collection that are contained in the
-     * specified collection (optional operation).  In other words, removes from
-     * this collection all of its elements that are not contained in the
-     * specified collection.
-     *
-     * @param c collection containing elements to be retained in this collection
-     * @return {@code true} if this collection changed as a result of the call
-     * @throws UnsupportedOperationException if the {@code retainAll} operation
-     *                                       is not supported by this collection
-     * @throws ClassCastException            if the types of one or more elements
-     *                                       in this collection are incompatible with the specified
-     *                                       collection
-     *                                       (<a href="{@docRoot}/java.base/java/util/Collection.html#optional-restrictions">optional</a>)
-     * @throws NullPointerException          if this collection contains one or more
-     *                                       null elements and the specified collection does not permit null
-     *                                       elements
-     *                                       (<a href="{@docRoot}/java.base/java/util/Collection.html#optional-restrictions">optional</a>),
-     *                                       or if the specified collection is null
-     * @see #remove(Object)
-     * @see #contains(Object)
-     */
-    @Override
-    public boolean retainAll(Collection c) {
-        return false;
-    }
-
-    /**
-     * Removes all of this collection's elements that are also contained in the
-     * specified collection (optional operation).  After this call returns,
-     * this collection will contain no elements in common with the specified
-     * collection.
-     *
-     * @param c collection containing elements to be removed from this collection
-     * @return {@code true} if this collection changed as a result of the
-     * call
-     * @throws UnsupportedOperationException if the {@code removeAll} method
-     *                                       is not supported by this collection
-     * @throws ClassCastException            if the types of one or more elements
-     *                                       in this collection are incompatible with the specified
-     *                                       collection
-     *                                       (<a href="{@docRoot}/java.base/java/util/Collection.html#optional-restrictions">optional</a>)
-     * @throws NullPointerException          if this collection contains one or more
-     *                                       null elements and the specified collection does not support
-     *                                       null elements
-     *                                       (<a href="{@docRoot}/java.base/java/util/Collection.html#optional-restrictions">optional</a>),
-     *                                       or if the specified collection is null
-     * @see #remove(Object)
-     * @see #contains(Object)
-     */
-    @Override
-    public boolean removeAll(Collection c) {
-        return false;
-    }
-
-    /**
-     * Returns {@code true} if this collection contains all of the elements
-     * in the specified collection.
-     *
-     * @param c collection to be checked for containment in this collection
-     * @return {@code true} if this collection contains all of the elements
-     * in the specified collection
-     * @throws ClassCastException   if the types of one or more elements
-     *                              in the specified collection are incompatible with this
-     *                              collection
-     *                              (<a href="{@docRoot}/java.base/java/util/Collection.html#optional-restrictions">optional</a>)
-     * @throws NullPointerException if the specified collection contains one
-     *                              or more null elements and this collection does not permit null
-     *                              elements
-     *                              (<a href="{@docRoot}/java.base/java/util/Collection.html#optional-restrictions">optional</a>),
-     *                              or if the specified collection is null.
-     * @see #contains(Object)
-     */
-    @Override
-    public boolean containsAll(Collection c) {
-        return false;
+        backingStore = new String[DEFAULT_INITIAL_CAPACITY];
+        size = 0;
+        front = 0;
+        back = 0;
     }
 
     /**
@@ -445,22 +225,8 @@ public class MyQueue implements Queue {
      * @throws IllegalArgumentException if some property of this element
      *                                  prevents it from being added to this queue
      */
-    @Override
     public boolean offer(Object o) {
         return false;
-    }
-
-    /**
-     * Retrieves and removes the head of this queue.  This method differs
-     * from {@link #poll() poll()} only in that it throws an exception if
-     * this queue is empty.
-     *
-     * @return the head of this queue
-     * @throws NoSuchElementException if this queue is empty
-     */
-    @Override
-    public Object remove() {
-        return null;
     }
 
     /**
@@ -469,21 +235,7 @@ public class MyQueue implements Queue {
      *
      * @return the head of this queue, or {@code null} if this queue is empty
      */
-    @Override
     public Object poll() {
-        return null;
-    }
-
-    /**
-     * Retrieves, but does not remove, the head of this queue.  This method
-     * differs from {@link #peek peek} only in that it throws an exception
-     * if this queue is empty.
-     *
-     * @return the head of this queue
-     * @throws NoSuchElementException if this queue is empty
-     */
-    @Override
-    public Object element() {
         return null;
     }
 
@@ -493,8 +245,7 @@ public class MyQueue implements Queue {
      *
      * @return the head of this queue, or {@code null} if this queue is empty
      */
-    @Override
     public Object peek() {
-        return null;
+        return backingStore[back];
     }
 }
