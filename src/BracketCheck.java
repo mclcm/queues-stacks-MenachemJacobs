@@ -2,8 +2,8 @@ import java.util.Stack;
 
 public class BracketCheck {
     private Stack<Character> bracketStack;
-    private char[] openers = new char[]{'(', '[', '{'};
-    private char[] closers = new char[]{')', ']', '}'};
+    private final char[] openers = new char[]{'(', '[', '{'};
+    private final char[] closers = new char[]{')', ']', '}'};
 
     public boolean isValid(String s) {
         bracketStack = new Stack<>();
@@ -18,7 +18,7 @@ public class BracketCheck {
                 //if it's a closer, but the stack is empty, or it doesn't match the most recent opener, return false
                 if (bracketStack.isEmpty() || !isBracketMatch(bracketStack.peek(), c))
                     return false;
-                //if it's a closer and it matches the most recent opener, pop the stack
+                    //if it's a closer and it matches the most recent opener, pop the stack
                 else if (isBracketMatch(bracketStack.peek(), c))
                     bracketStack.pop();
             }
@@ -46,11 +46,20 @@ public class BracketCheck {
     }
 
     private boolean isBracketMatch(char rBracket, char lBracket) {
-        return switch (rBracket) {
-            case '(' -> lBracket == ')';
-            case '[' -> lBracket == ']';
-            case '{' -> lBracket == '}';
-            default -> false;
-        };
+        int counter = 0;
+
+        for (char opener : openers) {
+            if (opener == rBracket)
+                break;
+            counter++;
+        }
+        return counter != openers.length && closers[counter] == lBracket;
+
+//        return switch (rBracket) {
+//            case '(' -> lBracket == ')';
+//            case '[' -> lBracket == ']';
+//            case '{' -> lBracket == '}';
+//            default -> false;
+//        };
     }
 }

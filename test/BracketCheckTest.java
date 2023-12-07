@@ -16,4 +16,10 @@ class BracketCheckTest {
         assertTrue(bracketTester.isValid("()"), "Simple case returned false when it should not have");
         assertFalse(bracketTester.isValid("(}"), "Simple case returned true when it should not have");
     }
+
+    @Test
+    void bracketCheck_Edge_weirderCases(){
+        assertTrue(bracketTester.isValid("({}[])"), "");
+        assertFalse(bracketTester.isValid("(){}[])"), "");
+    }
 }
