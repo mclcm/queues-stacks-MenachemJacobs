@@ -63,7 +63,7 @@ public class MyQueue{
         boolean returnVal = false;
 
         for (int i = 0; i < size; i++) {
-            if (backingStore[(i + front) % backingStore.length].equals(o)) {
+            if (backingStore[(i + front) % backingStore.length] != null && backingStore[(i + front) % backingStore.length].equals(o)) {
                 returnVal = true;
                 break;
             }
@@ -148,11 +148,11 @@ public class MyQueue{
     private void refactor() {
         String[] holder = backingStore;
         backingStore = new String[backingStore.length + DEFAULT_INITIAL_CAPACITY];
-        for (int i = 0; i < backingStore.length; i++) {
-            backingStore[i] = holder[(i + front) % backingStore.length];
+        for (int i = 0; i < holder.length; i++) {
+            backingStore[i] = holder[(i + front) % holder.length];
         }
         front = 0;
-        back = size;
+        back = size - 1;
     }
 
     /**
