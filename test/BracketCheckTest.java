@@ -19,7 +19,7 @@ class BracketCheckTest {
 
     @Test
     void bracketCheck_Edge_weirderCases(){
-        assertTrue(bracketTester.isValid("({}[])"), "");
-        assertFalse(bracketTester.isValid("(){}[])"), "");
+        assertTrue(bracketTester.isValid("({}[])"), "Weird pass has failed");
+        assertFalse(bracketTester.isValid("(){}[])"), "Weird fail has passed");
     }
 }
