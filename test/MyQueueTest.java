@@ -1,6 +1,7 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.NoSuchElementException;
 import java.util.Queue;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -79,6 +80,35 @@ class MyQueueTest {
         for (int i = 0; i < 3; i++) {
             assertEquals(poem[i], myQueue.dequeue(), "Elements not dequeued in the expected order");
         }
+    }
+
+    @Test
+    void dequeue_Edge_emptyDequeue() {
+        prep();
+        while(!myQueue.isEmpty()){
+            myQueue.dequeue();
+        }
+
+
+        assertThrows(IllegalStateException.class, myQueue::dequeue);
+    }
+
+    @Test
+    void peek_Normal(){
+        myQueue.enqueue("Poe");
+        assertEquals("Poe", myQueue.peek(), "single el peek() failed");
+        myQueue.enqueue("E.");
+        assertEquals("Poe", myQueue.peek(), "Multi el peek() failed");
+
+        assertEquals(2, myQueue.size(), "At a guess, peek() is changing the size. size() is failing after a peek()");
+    }
+
+    @Test
+    void peek_Edge_againstDequeue(){
+        prep();
+        myQueue.dequeue();
+        assertEquals(myQueue.peek(), myQueue.dequeue(), "peek() and dequeue() are finding different elements");
+        assertNotEquals(myQueue.dequeue(), myQueue.peek(), "peek() is finding the same element as the previous dequeue()");
     }
 
     void prep() {
