@@ -1,12 +1,22 @@
 import java.util.Stack;
 
+/**
+ * A utility class for checking the validity of brackets in a given string.
+ */
 public class BracketCheck {
     private Stack<Character> bracketStack;
     private final char[] openers = new char[]{'(', '[', '{'};
     private final char[] closers = new char[]{')', ']', '}'};
 
+    /**
+     * Checks whether the given string contains properly matched brackets.
+     *
+     * @param s The input string to be validated.
+     * @return {@code true} if the brackets are balanced, {@code false} otherwise.
+     */
     public boolean isValid(String s) {
         bracketStack = new Stack<>();
+
 
         //look through every char of the string
         for (char c : s.toCharArray()) {
@@ -27,6 +37,12 @@ public class BracketCheck {
         return bracketStack.isEmpty();
     }
 
+    /**
+     * Checks if the given character is an opening bracket.
+     *
+     * @param c The character to be checked.
+     * @return {@code true} if the character is an opening bracket, {@code false} otherwise.
+     */
     private boolean isOpener(char c) {
         for (char letter : openers) {
             if (c == letter)
@@ -36,6 +52,12 @@ public class BracketCheck {
         return false;
     }
 
+    /**
+     * Checks if the given character is a closing bracket.
+     *
+     * @param c The character to be checked.
+     * @return {@code true} if the character is a closing bracket, {@code false} otherwise.
+     */
     private boolean isCloser(char c) {
         for (char letter : closers) {
             if (c == letter)
@@ -45,6 +67,13 @@ public class BracketCheck {
         return false;
     }
 
+    /**
+     * Checks if the given opening bracket matches the corresponding closing bracket.
+     *
+     * @param rBracket The opening bracket.
+     * @param lBracket The closing bracket to be checked against.
+     * @return {@code true} if the brackets match, {@code false} otherwise.
+     */
     private boolean isBracketMatch(char rBracket, char lBracket) {
         int counter = 0;
 

@@ -1,4 +1,3 @@
-import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -6,7 +5,7 @@ import java.util.*;
  * Elements are enqueued at the back and dequeued from the front.
  * The circular queue allows efficient use of space by wrapping around the array.
  */
-public class MyQueue{
+public class MyQueue {
     private static final int DEFAULT_INITIAL_CAPACITY = 10;
     String[] backingStore;
     private int size = 0;
@@ -63,7 +62,7 @@ public class MyQueue{
         boolean returnVal = false;
 
         for (int i = 0; i < size; i++) {
-            if (backingStore[(i + front) % backingStore.length] != null && backingStore[(i + front) % backingStore.length].equals(o)) {
+            if (Objects.equals(backingStore[(i + front) % backingStore.length], o)) {
                 returnVal = true;
                 break;
             }
@@ -80,7 +79,7 @@ public class MyQueue{
      *
      * @return an {@code Iterator} over the elements in this collection
      */
-    public Iterator iterator() {
+    public Iterator<String> iterator() {
         return new MyIterator();
     }
 
@@ -115,6 +114,11 @@ public class MyQueue{
             counter++;
             return backingStore[cursor++ % backingStore.length];
         }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException("remove() is not supported");
+        }
     }
 
     /**
@@ -124,12 +128,11 @@ public class MyQueue{
      * @throws IllegalArgumentException if the queue is full.
      */
     public void enqueue(String s) {
-        //Todo find out how this should actually be handled
         if (size + 1 == Integer.MAX_VALUE)
             throw new IllegalArgumentException("may not add more values to this Stack");
 
         if (size == backingStore.length)
-            refactor();
+            resize();
 
         if (isEmpty()) {
             backingStore[0] = s;
@@ -145,7 +148,7 @@ public class MyQueue{
      * Refactors the backing store array to accommodate more elements.
      * Invoked when the current capacity is reached during an enqueue operation.
      */
-    private void refactor() {
+    private void resize() {
         String[] holder = backingStore;
         backingStore = new String[backingStore.length + DEFAULT_INITIAL_CAPACITY];
         for (int i = 0; i < holder.length; i++) {
@@ -187,7 +190,7 @@ public class MyQueue{
         String[] outray = new String[size];
         int counter = 0;
 
-        while(sitter.hasNext()){
+        while (sitter.hasNext()) {
             outray[counter++] = (String) sitter.next();
         }
 
