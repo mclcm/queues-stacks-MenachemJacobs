@@ -40,10 +40,10 @@ class MyQueueTest {
     }
 
     @Test
-    void isEmpty_Edge_cleanedQueue(){
+    void isEmpty_Edge_cleanedQueue() {
         prep();
         int limit = myQueue.size();
-        for (int i = 0; i < limit; i++){
+        for (int i = 0; i < limit; i++) {
             myQueue.dequeue();
         }
         assertTrue(myQueue.isEmpty());
@@ -57,7 +57,7 @@ class MyQueueTest {
     }
 
     @Test
-    void enqueue_Edge_bigFill(){
+    void enqueue_Edge_bigFill() {
         String valToAdd;
 
         // Adding a larger set of strings for testing
@@ -73,7 +73,7 @@ class MyQueueTest {
     @Test
     void dequeue_Normal() {
         String[] poem = new String[]{"Poe", "E.", "Near a Raven"};
-        for (String word : poem){
+        for (String word : poem) {
             myQueue.enqueue(word);
         }
 
@@ -85,16 +85,29 @@ class MyQueueTest {
     @Test
     void dequeue_Edge_emptyDequeue() {
         prep();
-        while(!myQueue.isEmpty()){
+        while (!myQueue.isEmpty()) {
             myQueue.dequeue();
         }
-
 
         assertThrows(IllegalStateException.class, myQueue::dequeue);
     }
 
     @Test
-    void peek_Normal(){
+    void order_test() {
+        String[] contra = new String[]{"Poe", "E.", "Near a Raven"};
+        int counter = 0;
+
+        for (String word : contra) {
+            myQueue.enqueue(word);
+        }
+
+        for (String word : contra) {
+            assertEquals(word, myQueue.dequeue());
+        }
+    }
+
+    @Test
+    void peek_Normal() {
         myQueue.enqueue("Poe");
         assertEquals("Poe", myQueue.peek(), "single el peek() failed");
         myQueue.enqueue("E.");
@@ -104,7 +117,7 @@ class MyQueueTest {
     }
 
     @Test
-    void peek_Edge_againstDequeue(){
+    void peek_Edge_againstDequeue() {
         prep();
         myQueue.dequeue();
         assertEquals(myQueue.peek(), myQueue.dequeue(), "peek() and dequeue() are finding different elements");
